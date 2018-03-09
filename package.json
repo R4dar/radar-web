@@ -1,12 +1,13 @@
 {
-  "name": "Telegram",
-  "description": "Telegram Web App.\nMore info & source code here: https://github.com/zhukov/webogram",
-  "version": "0.7.0",
+  "name": "Radar",
+  "description": "Radar, an Telegram Web App.",
+  "version": "0.0.1",
+  "private": true,
   "main": "app/index.html",
   "single-instance": true,
   "dom_storage_quota": 40,
   "window": {
-    "title": "Telegram",
+    "title": "Radar",
     "icon": "app/img/icons/icon128.png",
     "toolbar": false,
     "frame": true,
@@ -22,15 +23,7 @@
     "start": "gulp watch",
     "test": "gulp test"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/zhukov/webogram.git"
-  },
-  "author": "zhukov",
   "license": "GPL-3.0",
-  "bugs": {
-    "url": "https://github.com/zhukov/webogram/issues"
-  },
   "locales": [
     "en-us",
     "es-es",
@@ -40,7 +33,6 @@
     "nl-nl",
     "pt-br"
   ],
-  "homepage": "http://zhukov.github.io/webogram",
   "devDependencies": {
     "del": "^1.2.0",
     "event-stream": "^3.1.0",
