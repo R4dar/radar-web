@@ -1,7 +1,6 @@
 # Radar 
 
-Criado com Telegram
-
+Criado com Webogram e utiliza os servidores do Telegram
 
 ## Technical details
 

@@ -57,7 +57,7 @@ self.addEventListener('push', function(event) {
     if (userInvisibleIsSupported() || hasActiveWindows) {
       return closeAllNotifications()
     }
-    return self.registration.showNotification('Telegram', {
+    return self.registration.showNotification('Radar', {
       tag: 'unknown_peer'
     }).then(function () {
       if (hasActiveWindows) {
@@ -112,7 +112,7 @@ self.addEventListener('message', function(event) {
 })
 
 function fireNotification(obj, settings, lang) {
-  var title = obj.title || 'Telegram'
+  var title = obj.title || 'Radar'
   var body = obj.description || ''
   var icon = 'img/logo_share.png'
   var peerID
@@ -130,7 +130,7 @@ function fireNotification(obj, settings, lang) {
   var tag = 'peer' + peerID
 
   if (settings && settings.nopreview) {
-    title = 'Telegram'
+    title = 'Radar'
     body = lang.push_message_nopreview || 'You have a new message'
     tag = 'unknown_peer'
   }
@@ -371,7 +371,7 @@ self.addEventListener('notificationclose', onCloseNotification)
           reject(error)
         }
       })
-      
+
     })
   }
 

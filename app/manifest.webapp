@@ -1,12 +1,12 @@
 {
-  "name": "Telegram",
-  "description": "Telegram Web App.\nMore info & source code here: https://github.com/zhukov/webogram",
+  "name": "Radar",
+  "description": "Radar Web App.",
   "version": "0.7.0",
   "type": "privileged",
   "launch_path": "/index.html",
   "developer": {
-    "name": "Igor Zhukov",
-    "url": "https://github.com/zhukov"
+    "name": "Alberto Souza",
+    "url": "https://github.com/albertosouza"
   },
   "installs_allowed_from": [
     "*"

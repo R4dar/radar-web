@@ -50,9 +50,12 @@ angular.module('myApp.controllers', ['myApp.i18n'])
       WebPushApiManager.forceUnsubscribe()
     })
 
-    var options = {dcID: 2, createNetworker: true}
-    var countryChanged = false
-    var selectedCountry = false
+    var options = {dcID: 2, createNetworker: true};
+    var countryChanged = false;
+    var selectedCountry = false;
+    var destaques = [
+      'radarRedeLivre'
+    ];
 
     $scope.credentials = {phone_country: '', phone_country_name: '', phone_number: '', phone_full: ''}
     $scope.progress = {}
@@ -228,7 +231,7 @@ angular.module('myApp.controllers', ['myApp.i18n'])
         })['finally'](function () {
           if ($rootScope.idle.isIDLE || tsNow() - authKeyStarted > 60000) {
             NotificationsManager.notify({
-              title: 'Telegram',
+              title: 'Radar',
               message: 'Your authorization key was successfully generated! Open the app to log in.',
               tag: 'auth_key'
             })
@@ -567,7 +570,7 @@ angular.module('myApp.controllers', ['myApp.i18n'])
 
     $scope.openGroup = function () {
       ContactsSelectService.selectContacts({action: 'new_group'}).then(function (userIDs) {
-        if (userIDs && 
+        if (userIDs &&
             userIDs.length) {
           var scope = $rootScope.$new()
           scope.userIDs = userIDs
@@ -1966,7 +1969,7 @@ angular.module('myApp.controllers', ['myApp.i18n'])
               },
               showCloseButton: false
             })
-          } else {            
+          } else {
             $rootScope.$broadcast('history_focus', {
               peerString: peerStrings,
               attachment: {
@@ -1974,7 +1977,7 @@ angular.module('myApp.controllers', ['myApp.i18n'])
                 id: selectedMessageIDs
               }
             })
-          }    
+          }
         })
       }
     }
@@ -4957,8 +4960,8 @@ angular.module('myApp.controllers', ['myApp.i18n'])
     }
 
     $scope.dialogMultiSelect = function(peerString, event) {
-      var peerID = AppPeersManager.getPeerID(peerString)      
-      $scope.multiSelect = $scope.selectedPeers[peerID] == undefined || 
+      var peerID = AppPeersManager.getPeerID(peerString)
+      $scope.multiSelect = $scope.selectedPeers[peerID] == undefined ||
         $scope.selectedPeers[peerID] != undefined && Object.keys($scope.selectedPeers).length > 1
       if ($scope.selectedPeers[peerID]) {
         delete $scope.selectedPeers[peerID]

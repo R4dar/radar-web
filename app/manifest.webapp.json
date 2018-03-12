@@ -1,6 +1,6 @@
 {
-  "name": "Telegram",
-  "description": "Telegram Web App.\nMore info & source code here: https://github.com/zhukov/webogram",
+  "name": "Radar",
+  "description": "Radar Web App.",
   "short_name": "Telegram",
   "display": "standalone",
   "theme_color": "#497495",

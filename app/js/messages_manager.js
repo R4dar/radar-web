@@ -1515,7 +1515,7 @@ angular.module('myApp.services')
 
             case 'messageActionPhoneCall':
               delete apiMessage.fromID
-              apiMessage.action.type = 
+              apiMessage.action.type =
                 (apiMessage.pFlags.out ? 'out_' : 'in_') +
                 (
                   apiMessage.action.reason._ == 'phoneCallDiscardReasonMissed' ||
@@ -1525,7 +1525,7 @@ angular.module('myApp.services')
                 )
               break
           }
-          
+
           if (migrateFrom &&
               migrateTo &&
               !migratedFromTo[migrateFrom] &&
@@ -3701,7 +3701,7 @@ angular.module('myApp.services')
               id: fromID,
               pFlags: {verified: true},
               access_hash: 0,
-              first_name: 'Telegram',
+              first_name: 'Radar',
               phone: '42777'
             }])
           }

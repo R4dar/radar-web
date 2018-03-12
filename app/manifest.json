@@ -1,8 +1,8 @@
 {
-  "name": "Telegram",
-  "description": "Telegram Web App.\nMore info & source code here: https://github.com/zhukov/webogram",
+  "name": "Radar",
+  "description": "Radar Web App",
   "version": "0.7.0",
-  "short_name": "Telegram",
+  "short_name": "Radar",
   "manifest_version": 2,
   "app": {
     "background": {
