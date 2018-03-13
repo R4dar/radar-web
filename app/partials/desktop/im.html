@@ -25,6 +25,10 @@
               <button ng-if="phonebookAvailable" type="button" class="btn btn-primary btn-sm im_dialogs_import_phonebook" ng-click="importPhonebook()" my-i18n="im_import_phonebook"></button>
             </div>
 
+            <ul class="nav nav-destaques nav-pills nav-stacked">
+              <li class="im_dialog_wrap destaque-dialog" my-dialog dialog-message="dialogMessage" ng-repeat="dialogMessage in destaques track by dialogMessage.peerID" ng-class="{active: curDialog.peerID == dialogMessage.peerID}"></li>
+            </ul>
+
             <ul class="nav nav-pills nav-stacked">
               <li class="im_dialog_wrap" ng-if="searchPeer">
                 <a class="im_dialog im_dialog_searchpeer disabled" ng-mousedown="setSearchPeer()">

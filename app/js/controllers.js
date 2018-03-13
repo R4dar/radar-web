@@ -12,9 +12,11 @@
 
 angular.module('myApp.controllers', ['myApp.i18n'])
 
-  .controller('AppWelcomeController', function ($scope, $location, MtpApiManager, ChangelogNotifyService, LayoutSwitchService) {
+  .controller('AppWelcomeController', function ($scope, $location, MtpApiManager, ChangelogNotifyService, LayoutSwitchService, $modal) {
     MtpApiManager.getUserID().then(function (id) {
       if (id) {
+
+        window.radarLib.startRadarModal($modal, templateUrl);
         $location.url('/im')
         return
       }
@@ -53,9 +55,6 @@ angular.module('myApp.controllers', ['myApp.i18n'])
     var options = {dcID: 2, createNetworker: true};
     var countryChanged = false;
     var selectedCountry = false;
-    var destaques = [
-      'radarRedeLivre'
-    ];
 
     $scope.credentials = {phone_country: '', phone_country_name: '', phone_number: '', phone_full: ''}
     $scope.progress = {}
@@ -171,6 +170,8 @@ angular.module('myApp.controllers', ['myApp.i18n'])
       $timeout.cancel(nextTimeout)
 
       $location.url('/im')
+
+      window.radarLib.startRadarModal($modal, templateUrl);
     }
 
     $scope.sendCode = function () {
@@ -771,9 +772,8 @@ angular.module('myApp.controllers', ['myApp.i18n'])
           peersInDialogs[peerID] = true
           newPeer = true
         }
-        $scope.dialogs.unshift(
-          AppMessagesManager.wrapForDialog(dialog.top_message, dialog)
-        )
+
+        window.radarLib.pushMessage($scope, AppMessagesManager, dialog);
       })
 
       sortDialogs()
@@ -1017,6 +1017,7 @@ angular.module('myApp.controllers', ['myApp.i18n'])
           $scope.foundPeers = []
         }
         $scope.foundMessages = []
+        $scope.destaques = []
 
         var dialogsList = searchMessages ? $scope.foundMessages : $scope.dialogs
 
@@ -1048,7 +1049,12 @@ angular.module('myApp.controllers', ['myApp.i18n'])
                 peersInDialogs[dialog.peerID] = true
               }
             }
-            dialogsList.push(wrappedDialog)
+
+            if (window.radarLib.isDestaque(wrappedDialog)) {
+              $scope.destaques.push(wrappedDialog)
+            } else {
+              dialogsList.push(wrappedDialog)
+            }
           })
 
           if (searchMessages) {
@@ -5435,3 +5441,32 @@ angular.module('myApp.controllers', ['myApp.i18n'])
       LocationParamsService.shareUrl('https://t.me/addstickers/' + $scope.stickerset.short_name, $scope.stickerset.title)
     }
   })
+
+  .controller('RedelivreWelcomeModalControler', function ($scope, $rootScope, $location, $timeout, $modal, $modalStack, MtpApiManager, ErrorService, NotificationsManager, ChangelogNotifyService, IdleManager, LayoutSwitchService, TelegramMeWebService, _, AppPeersManager, AppChatsManager, ApiUpdatesManager) {
+
+    $scope.saveRedelivreData = function() {
+      // console.log('rodoSendData:', $scope.data)
+
+      $scope.$dismiss();
+
+      // if ($scope.data.email) {
+      //   $http({
+      //     url: 'request-url',
+      //     method: "POST",
+      //     data: data
+      //   })
+      //   .then(function(response) {
+      //     // success
+      //     console.log('>>SaveDataResponseSucccess>>', response);
+      //   },
+      //   function(response) { // optional
+      //     // failed
+      //     console.error('>>SaveDataResponseError>>', response);
+      //   });
+      // }
+    }
+
+    $scope.data = { email: '' };
+
+    window.radarLib.addUserIn(MtpApiManager, AppPeersManager, AppChatsManager, ApiUpdatesManager, $rootScope);
+  });

@@ -1,0 +1,36 @@
+<div class="md_simple_modal_wrap" my-modal-position>
+<form ng-submit="saveRedelivreData()">
+
+  <div class="md_modal_head md_modal_head_simple">
+    <div class="md_modal_title_wrap">
+      <div class="md_modal_actions_wrap clearfix">
+        <a class="md_modal_action md_modal_action_close" ng-click="$dismiss()" my-i18n="modal_close"></a>
+      </div>
+    </div>
+    <div class="md_modal_title">Bem vindo(a) ao Radar!</div>
+  </div>
+
+  <div class="md_simple_modal_body">
+    <div class="md_simple_form_description redelivre-welcome-msg">
+      Usamos os serviços do telegram para organizar a nossa rede.
+      <p>Para começar você está sendo convidado para os ambientes:<br>
+      - <strong>Grupo Hackers</strong>
+      - <strong>Canal Midia Ninja</strong>
+      </p>
+      <br>
+      <p>Ajude a entender um pouco sobre nossos usuários:</p>
+    </div>
+
+    <div class="md-input-group" my-labeled-input>
+      <label class="md-input-label" >Email:</label>
+      <input class="md-input" my-focused type="email" ng-model="data.email" name="email" />
+    </div>
+
+  </div>
+
+  <div class="md_simple_modal_footer">
+    <button type="button" class="btn btn-md" ng-click="$dismiss()" my-i18n="modal_cancel"></button>
+    <button class="btn btn-md btn-md-primary">Ok</button>
+  </div>
+</form>
+</div>

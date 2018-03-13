@@ -56,32 +56,18 @@ Config.Navigator = {
 // Touch detect: https://github.com/Modernizr/Modernizr/blob/master/feature-detects/touchevents.js
 
 Config.I18n = {
-  locale: 'en-us',
+  locale: 'pt-br',
   supported: [
     'en-us'
-    , 'es-es'
-    , 'de-de'
-    , 'it-it'
-    , 'nl-nl'
     , 'pt-br'
   // ,"ru-ru"
   ], // To be copied to package.json
   languages: {
     'en-us': 'English',
-    'de-de': 'Deutsch',
-    'es-es': 'Español',
-    'it-it': 'Italiano',
-    'ru-ru': 'Русский',
-    'nl-nl': 'Nederlands',
     'pt-br': 'Português (Brazil)'
   },
   aliases: {
-    'en': 'en-us',
-    'de': 'de-de',
-    'es': 'es-es',
-    'it': 'it-it',
-    'ru': 'ru-ru',
-    'nl': 'nl-nl'
+    'en': 'en-us'
   },
   messages: {},
   fallback_messages: {}
