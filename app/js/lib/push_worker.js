@@ -11,6 +11,7 @@ switch (location.hostname) {
     defaultBaseUrl = 'https://zhukov.github.io/webogram/#/im'
     break
   default:
+    defaultBaseUrl = 'https://' + location.hostname + '/#/im'
   case 'web.telegram.org':
     defaultBaseUrl = 'https://' + location.hostname + '/#/im'
 }

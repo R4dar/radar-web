@@ -151,4 +151,4 @@
   };
 
   window.radarLib = rl;
-})()
+})();
