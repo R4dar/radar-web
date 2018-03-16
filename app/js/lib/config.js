@@ -18,10 +18,12 @@ Config = window.Config || {}
 */
 
 Config.App = {
-  id: 2496,
-  hash: '8da85b0d5bfe62527e5b244c209159c3',
+  id: 52662,
+  hash: '79c281a89ac13215fa4fdbb581af9977',
   version: '0.7.0',
-  domains: ['web.telegram.org', 'zhukov.github.io']
+  domains: [
+    'radar.redelivre.org.br'
+  ]
 }
 
 Config.Modes = {

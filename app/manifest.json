@@ -1,7 +1,7 @@
 {
   "name": "Radar",
   "description": "Radar Web App",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "short_name": "Radar",
   "manifest_version": 2,
   "app": {
