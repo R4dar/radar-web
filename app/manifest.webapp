@@ -1,7 +1,7 @@
 {
   "name": "Radar",
   "description": "Radar Web App.",
-  "version": "0.7.0",
+  "version": "1.0.0",
   "type": "privileged",
   "launch_path": "/index.html",
   "developer": {
