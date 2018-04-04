@@ -712,6 +712,7 @@ angular.module('myApp.controllers', ['myApp.i18n'])
     $scope.foundPeers = []
     $scope.foundMessages = []
     $scope.tab = 'all'; // all, groups, contacts, bots and bookmarks
+    $scope.showSearchBox = true
 
     if ($scope.search === undefined) {
       $scope.search = {}
@@ -732,7 +733,6 @@ angular.module('myApp.controllers', ['myApp.i18n'])
     var contactsShown
 
     $scope.$on('dialogs_need_more', function () {
-      // console.log('on need more')
       showMoreDialogs()
     })
 
@@ -784,7 +784,11 @@ angular.module('myApp.controllers', ['myApp.i18n'])
           newPeer = true
         }
 
-        window.radarLib.pushMessage($scope, AppMessagesManager, dialog);
+        var wrappedDialog = AppMessagesManager.wrapForDialog(dialog.top_message, dialog)
+
+        checkIfShouldShowInList(wrappedDialog, AppChatsManager, $scope);
+
+        $scope.dialogs.unshift(wrappedDialog);
       })
 
       sortDialogs()
@@ -803,6 +807,12 @@ angular.module('myApp.controllers', ['myApp.i18n'])
       $scope.foundMessages = []
       contactsJump = 0;
       loadDialogs();
+
+      if ($scope.tab == 'all') {
+        $scope.showSearchBox = true;
+      } else {
+        $scope.showSearchBox = false;
+      }
     })
 
     function deleteDialog (peerID) {
@@ -837,6 +847,7 @@ angular.module('myApp.controllers', ['myApp.i18n'])
         curDialog = $scope.dialogs[i]
         if (curDialog.peerID == dialog.peerID) {
           wrappedDialog = AppMessagesManager.wrapForDialog(dialog.top_message, dialog)
+          checkIfShouldShowInList(wrappedDialog, AppChatsManager, $scope);
           $scope.dialogs.splice(i, 1, wrappedDialog)
           break
         }
@@ -1102,6 +1113,9 @@ angular.module('myApp.controllers', ['myApp.i18n'])
       })
     }
 
+    /**
+     * Check if wrappedDialog should be visible
+     */
     function checkIfShouldShowInList(wrappedDialog, AppChatsManager, $scope) {
       switch ($scope.tab) {
         case 'groups':
@@ -1109,29 +1123,45 @@ angular.module('myApp.controllers', ['myApp.i18n'])
             wrappedDialog.peerData._ == 'chat' ||
             AppChatsManager.isMegagroup(wrappedDialog.peerData.id)
           ) {
-            console.warn('group>', wrappedDialog);
             wrappedDialog.shouldShowInList = true;
-          } else if (wrappedDialog.peerData._ == 'channel') {
-            console.warn('channel>', wrappedDialog);
+          } else {
             wrappedDialog.shouldShowInList = false;
-          } else if (
-            wrappedDialog.peerData._ == 'user'
-          ) {
-            console.warn('user>', wrappedDialog);
-            wrappedDialog.shouldShowInList = false;
-          } else if(true) {
-            console.warn('d>', wrappedDialog);
           }
 
           break;
         case 'contacts':
           if (
-            wrappedDialog.peerData._ == 'user'
+            wrappedDialog.peerData._ == 'user' &&
+            !AppPeersManager.isBot(wrappedDialog.peerData.id)
           ) {
             wrappedDialog.shouldShowInList = true;
           } else {
             wrappedDialog.shouldShowInList = false;
           }
+          break;
+
+        case 'channels':
+          if (
+            AppChatsManager.isChannel(wrappedDialog.peerData.id) &&
+            wrappedDialog.peerData.pFlags.broadcast
+          ) {
+            wrappedDialog.shouldShowInList = true;
+          } else {
+            wrappedDialog.shouldShowInList = false;
+          }
+          break;
+        case 'bots':
+          if (
+            AppPeersManager.isBot(wrappedDialog.peerData.id)
+          ) {
+            wrappedDialog.shouldShowInList = true;
+          } else {
+            wrappedDialog.shouldShowInList = false;
+          }
+          break;
+        case 'bookmarks':
+          console.log('TODO! add support for bookmarks');
+          wrappedDialog.shouldShowInList = false;
           break;
         case 'all':
         default:
