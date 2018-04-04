@@ -2,6 +2,27 @@
 
 <div class="im_page_wrap" ng-class="{im_page_peer_not_selected: !curDialog.peer}">
 
+  <div class="tg_head_tabs">
+    <a class="tg_head_tab_item" ng-class="{active: tab == 'all' || !tab}" ng-click="openTab('all')">
+      <i class="icon-all-channels"></i>
+    </a>
+    <a class="tg_head_tab_item" ng-class="{active: tab == 'groups'}" ng-click="openTab('groups')">
+      <i class="icon-all-groups"></i>
+    </a>
+    <a class="tg_head_tab_item" ng-class="{active: tab == 'contacts'}" ng-click="openTab('contacts')">
+      <i class="icon-all-contacts"></i>
+    </a>
+    <a class="tg_head_tab_item" ng-class="{active: tab == 'bookmarks'}" ng-click="openTab('bookmarks')">
+      <i class="icon-all-bookmarks"></i>
+    </a>
+    <a class="tg_head_tab_item" ng-class="{active: tab == 'channels'}" ng-click="openTab('channels')">
+      <i class="icon-channels"></i>
+    </a>
+    <a class="tg_head_tab_item" ng-class="{active: tab == 'bots'}" ng-click="openTab('bots')">
+      <i class="icon-all-bots"></i>
+    </a>
+  </div>
+
   <div class="im_page_split clearfix">
 
     <div ng-controller="AppImDialogsController" my-dialogs class="im_dialogs_col_wrap" ng-class="search.query.length > 0 ? 'im_dialogs_col_search' : ''">
@@ -14,6 +35,7 @@
         </div>
       </div>
 
+      <!-- default telegram chats list -->
       <div my-dialogs-list-mobile class="im_dialogs_col im_dialogs_scrollable_wrap mobile_scrollable_wrap">
 
         <div class="im_dialogs_empty_wrap" ng-if="isEmpty.contacts" my-vertical-position="0.4">
@@ -23,12 +45,9 @@
           <button ng-if="phonebookAvailable" type="button" class="btn btn-primary btn-block im_dialogs_import_phonebook" ng-click="importPhonebook()" my-i18n="im_import_phonebook"></button>
         </div>
 
-        <ul class="nav nav-destaques nav-pills nav-stacked">
-          <li class="im_dialog_wrap destaque-dialog" my-dialog dialog-message="dialogMessage" ng-repeat="dialogMessage in destaques track by dialogMessage.peerID" ng-class="{active: curDialog.peerID == dialogMessage.peerID}"></li>
-        </ul>
-
         <ul class="nav nav-pills nav-stacked">
-          <li class="im_dialog_wrap" my-dialog dialog-message="dialogMessage" ng-repeat="dialogMessage in dialogs track by dialogMessage.peerID" ng-class="{active: curDialog.peerID == dialogMessage.peerID}"></li>
+          <!-- Messages list / chats: -->
+          <li class="im_dialog_wrap" my-dialog dialog-message="dialogMessage" ng-repeat="dialogMessage in dialogs track by dialogMessage.peerID" ng-class="{active: curDialog.peerID == dialogMessage.peerID}" ng-show="dialogMessage.shouldShowInList"></li>
         </ul>
 
         <div class="im_dialogs_contacts_wrap" ng-show="myResults.length > 0">
