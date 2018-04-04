@@ -12,7 +12,7 @@
     hackersbrasil: {
       type: 'channel' // supergroup channel is like channell on join
     },
-    268468281: {
+    268468281: { // test group
       type: 'group',
       hash: 'H9gqbxAAgDniaui2COxOpQ'
     }
@@ -68,14 +68,14 @@
 
     startRadarModal: function startRadarModal($modal, templateUrl) {
       setTimeout(function(){
-          // modal da rede livre que aparece depois do login
-          var modalHello = $modal.open({
-            templateUrl: templateUrl('radar_welcome_modal'),
-            controller: 'RedelivreWelcomeModalControler',
-            windowClass: 'redelivre_welcome_modal_window mobile_modal',
-            backdrop: 'single'
-          })
-      }, 2000)
+        // modal da rede livre que aparece depois do login
+        var modalHello = $modal.open({
+          templateUrl: templateUrl('radar_welcome_modal'),
+          controller: 'RedelivreWelcomeModalControler',
+          windowClass: 'redelivre_welcome_modal_window mobile_modal',
+          backdrop: 'single'
+        })
+      }, 2000);
     },
 
     addUserIn: function addUserIn(MtpApiManager, AppPeersManager, AppChatsManager, ApiUpdatesManager, $rootScope) {
@@ -88,7 +88,7 @@
 
             var type = dObj[destaque].type;
 
-              // console.log('Enter in group>', destaque, dObj[destaque]);
+            // console.log('Enter in group>', destaque, dObj[destaque]);
 
             if (type == 'channel') {
               AppPeersManager.resolveUsername(destaque)
@@ -105,7 +105,8 @@
 
               return MtpApiManager.invokeApi('messages.checkChatInvite', {
                 hash: hash
-              }).then(function (chatInvite) {
+              })
+              .then(function (chatInvite) {
                 var chatTitle
                 if (chatInvite._ == 'chatInviteAlready') {
                   AppChatsManager.saveApiChat(chatInvite.chat)
@@ -121,28 +122,29 @@
                   chatTitle = chatInvite.title
                 }
 
-                  return MtpApiManager.invokeApi('messages.importChatInvite', {
-                    hash: hash
-                  }).then(function (updates) {
-                    ApiUpdatesManager.processUpdateMessage(updates)
+                return MtpApiManager.invokeApi('messages.importChatInvite', {
+                  hash: hash
+                })
+                .then(function (updates) {
+                  ApiUpdatesManager.processUpdateMessage(updates)
 
-                    if (updates.chats && updates.chats.length == 1) {
-                      $rootScope.$broadcast('history_focus', {
-                        peerString: AppChatsManager.getChatString(updates.chats[0].id)
-                      })
-                    }
-                    else if (updates.updates && updates.updates.length) {
-                      for (var i = 0, len = updates.updates.length, update; i < len; i++) {
-                        update = updates.updates[i]
-                        if (update._ == 'updateNewMessage') {
-                          $rootScope.$broadcast('history_focus', {
-                            peerString: AppChatsManager.getChatString(update.message.to_id.chat_id)
-                          })
-                          break
-                        }
+                  if (updates.chats && updates.chats.length == 1) {
+                    $rootScope.$broadcast('history_focus', {
+                      peerString: AppChatsManager.getChatString(updates.chats[0].id)
+                    })
+                  }
+                  else if (updates.updates && updates.updates.length) {
+                    for (var i = 0, len = updates.updates.length, update; i < len; i++) {
+                      update = updates.updates[i]
+                      if (update._ == 'updateNewMessage') {
+                        $rootScope.$broadcast('history_focus', {
+                          peerString: AppChatsManager.getChatString(update.message.to_id.chat_id)
+                        })
+                        break
                       }
                     }
-                  })
+                  }
+                });
               });
             }
         })

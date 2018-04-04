@@ -490,6 +490,7 @@ angular.module('myApp.controllers', ['myApp.i18n'])
           pendingAttachment = peerData.attachment
         }
         if ($routeParams.p != peer) {
+          // TODO! add filter param here
           $location.url('/im?p=' + peer)
         } else {
           updateCurDialog()
@@ -499,6 +500,7 @@ angular.module('myApp.controllers', ['myApp.i18n'])
 
     $scope.$on('esc_no_more', function () {
       $rootScope.$apply(function () {
+        // TODO! add filter param here
         $location.url('/im')
       })
     })
@@ -585,6 +587,14 @@ angular.module('myApp.controllers', ['myApp.i18n'])
           })
         }
       })
+    }
+
+    $scope.openTab = function (tabName) {
+      $scope.tab = tabName;
+      // send to children dialigs list
+      $scope.$broadcast('openTab', {
+        tabName
+      });
     }
 
     $scope.importContact = function () {
@@ -701,6 +711,7 @@ angular.module('myApp.controllers', ['myApp.i18n'])
     $scope.myResults = []
     $scope.foundPeers = []
     $scope.foundMessages = []
+    $scope.tab = 'all'; // all, groups, contacts, bots and bookmarks
 
     if ($scope.search === undefined) {
       $scope.search = {}
@@ -784,6 +795,14 @@ angular.module('myApp.controllers', ['myApp.i18n'])
           showMoreConversations()
         }
       }
+    })
+
+    $scope.$on('openTab', function(ev, opts) {
+      $scope.tab = opts.tabName;
+      $scope.dialogs = []
+      $scope.foundMessages = []
+      contactsJump = 0;
+      loadDialogs();
     })
 
     function deleteDialog (peerID) {
@@ -960,6 +979,7 @@ angular.module('myApp.controllers', ['myApp.i18n'])
         return searchTimeoutPromise.then(function () {
           var searchPeerID = $scope.searchPeer || false
           return AppMessagesManager.getSearch(searchPeerID, $scope.search.query, {_: 'inputMessagesFilterEmpty'}, maxID).then(function (result) {
+
             if (curJump != jump) {
               return $q.reject()
             }
@@ -1016,6 +1036,7 @@ angular.module('myApp.controllers', ['myApp.i18n'])
           $scope.myResults = []
           $scope.foundPeers = []
         }
+
         $scope.foundMessages = []
         $scope.destaques = []
 
@@ -1028,6 +1049,7 @@ angular.module('myApp.controllers', ['myApp.i18n'])
                 !AppChatsManager.hasRights(-dialog.peerID, 'send')) {
               return
             }
+
             var wrapDialog = searchMessages ? undefined : dialog
             var wrappedDialog = AppMessagesManager.wrapForDialog(dialog.top_message, wrapDialog)
 
@@ -1040,6 +1062,8 @@ angular.module('myApp.controllers', ['myApp.i18n'])
               }
             }
 
+            checkIfShouldShowInList(wrappedDialog, AppChatsManager, $scope);
+
             if (searchMessages) {
               wrappedDialog.unreadCount = -1
             } else {
@@ -1050,11 +1074,7 @@ angular.module('myApp.controllers', ['myApp.i18n'])
               }
             }
 
-            if (window.radarLib.isDestaque(wrappedDialog)) {
-              $scope.destaques.push(wrappedDialog)
-            } else {
-              dialogsList.push(wrappedDialog)
-            }
+            dialogsList.push(wrappedDialog);
           })
 
           if (searchMessages) {
@@ -1080,6 +1100,43 @@ angular.module('myApp.controllers', ['myApp.i18n'])
           showMoreDialogs()
         }
       })
+    }
+
+    function checkIfShouldShowInList(wrappedDialog, AppChatsManager, $scope) {
+      switch ($scope.tab) {
+        case 'groups':
+          if (
+            wrappedDialog.peerData._ == 'chat' ||
+            AppChatsManager.isMegagroup(wrappedDialog.peerData.id)
+          ) {
+            console.warn('group>', wrappedDialog);
+            wrappedDialog.shouldShowInList = true;
+          } else if (wrappedDialog.peerData._ == 'channel') {
+            console.warn('channel>', wrappedDialog);
+            wrappedDialog.shouldShowInList = false;
+          } else if (
+            wrappedDialog.peerData._ == 'user'
+          ) {
+            console.warn('user>', wrappedDialog);
+            wrappedDialog.shouldShowInList = false;
+          } else if(true) {
+            console.warn('d>', wrappedDialog);
+          }
+
+          break;
+        case 'contacts':
+          if (
+            wrappedDialog.peerData._ == 'user'
+          ) {
+            wrappedDialog.shouldShowInList = true;
+          } else {
+            wrappedDialog.shouldShowInList = false;
+          }
+          break;
+        case 'all':
+        default:
+          wrappedDialog.shouldShowInList = true;
+      }
     }
 
     function showMoreDialogs () {
@@ -1125,6 +1182,8 @@ angular.module('myApp.controllers', ['myApp.i18n'])
                 wrappedDialog.peerID = message.fromID
               }
             }
+
+            checkIfShouldShowInList(wrappedDialog, AppChatsManager, $scope);
 
             dialogsList.push(wrappedDialog)
           })

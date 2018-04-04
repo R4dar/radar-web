@@ -2,6 +2,24 @@
 
 <div class="im_page_wrap clearfix" ng-class="{im_page_peer_not_selected: !curDialog.peer}">
 
+  <div class="tg_head_tabs">
+    <a class="tg_head_tab_item" ng-class="{active: tab == 'all' || !tab}" ng-click="openTab('all')">
+      <i class="icon-all-channels"></i>
+    </a>
+    <a class="tg_head_tab_item" ng-class="{active: tab == 'groups'}" ng-click="openTab('groups')">
+      <i class="icon-all-groups"></i>
+    </a>
+    <a class="tg_head_tab_item" ng-class="{active: tab == 'contacts'}" ng-click="openTab('contacts')">
+      <i class="icon-all-contacts"></i>
+    </a>
+    <a class="tg_head_tab_item" ng-class="{active: tab == 'bookmarks'}" ng-click="openTab('bookmarks')">
+      <i class="icon-all-bookmarks"></i>
+    </a>
+    <a class="tg_head_tab_item" ng-class="{active: tab == 'bots'}" ng-click="openTab('bots')">
+      <i class="icon-all-bots"></i>
+    </a>
+  </div>
+
   <div class="im_page_split clearfix">
 
     <div class="im_dialogs_col_wrap noselect" ng-controller="AppImDialogsController" my-dialogs ng-class="search.query.length > 0 ? 'im_dialogs_col_search' : ''">
@@ -14,6 +32,7 @@
         </div>
       </div>
 
+      <!-- default telegram chats list -->
       <div my-dialogs-list class="im_dialogs_col">
         <div class="im_dialogs_wrap nano">
           <div class="im_dialogs_scrollable_wrap nano-content">
@@ -25,17 +44,14 @@
               <button ng-if="phonebookAvailable" type="button" class="btn btn-primary btn-sm im_dialogs_import_phonebook" ng-click="importPhonebook()" my-i18n="im_import_phonebook"></button>
             </div>
 
-            <ul class="nav nav-destaques nav-pills nav-stacked">
-              <li class="im_dialog_wrap destaque-dialog" my-dialog dialog-message="dialogMessage" ng-repeat="dialogMessage in destaques track by dialogMessage.peerID" ng-class="{active: curDialog.peerID == dialogMessage.peerID}"></li>
-            </ul>
-
             <ul class="nav nav-pills nav-stacked">
+              <!-- Search: -->
               <li class="im_dialog_wrap" ng-if="searchPeer">
                 <a class="im_dialog im_dialog_searchpeer disabled" ng-mousedown="setSearchPeer()">
 
                   <div class="im_dialog_meta pull-right">
                     <div class="im_dialog_clear_searchpeer">
-                      <!-- <i class="icon icon-clear-searchpeer"></i> -->
+                      <i class="icon icon-clear-searchpeer"></i>
                       <i class="icon icon-search-clear"></i>
                     </div>
                   </div>
@@ -57,9 +73,12 @@
                 </a>
 
               </li>
-              <li class="im_dialog_wrap" my-dialog dialog-message="dialogMessage" ng-repeat="dialogMessage in dialogs track by dialogMessage.peerID" ng-class="{active: curDialog.peerID == dialogMessage.peerID}"></li>
+
+              <!-- Messages list / chats: -->
+              <li class="im_dialog_wrap" my-dialog dialog-message="dialogMessage" ng-repeat="dialogMessage in dialogs track by dialogMessage.peerID" ng-class="{active: curDialog.peerID == dialogMessage.peerID}" ng-show="dialogMessage.shouldShowInList"></li>
             </ul>
 
+            <!-- contacts: -->
             <div class="im_dialogs_contacts_wrap" ng-show="myResults.length > 0">
               <h5 my-i18n="im_chat_contacts_title"></h5>
               <ul class="nav nav-pills nav-stacked">
@@ -113,6 +132,8 @@
           </div>
         </div>
       </div>
+
+
     </div>
 
     <div class="im_history_col_wrap noselect" ng-controller="AppImHistoryController" ng-class="{im_history_loaded: state.loaded}">

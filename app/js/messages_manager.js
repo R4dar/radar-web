@@ -262,14 +262,16 @@ angular.module('myApp.services')
         flags |= 1
       }
       return MtpApiManager.invokeApi('messages.getDialogs', {
-        flags: flags,
+        // flags: flags,
         offset_date: offsetDate,
         offset_id: AppMessagesIDsManager.getMessageLocalID(offsetID),
         offset_peer: AppPeersManager.getInputPeerByID(offsetPeerID),
-        limit: limit
+        // limit: limit
       }, {
         timeout: 300
       }).then(function (dialogsResult) {
+        // TODO!
+        console.log('dialogsResult>>', dialogsResult);
         if (!offsetDate) {
           TelegramMeWebService.setAuthorized(true)
         }

@@ -633,6 +633,7 @@ angular.module('myApp.services', ['myApp.i18n', 'izhukov.utils'])
       }
 
       if (apiChat.username) {
+        console.log('chat,apiChat.username>', apiChat, apiChat.username);
         var searchUsername = SearchIndexManager.cleanUsername(apiChat.username)
         usernames[searchUsername] = apiChat.id
       }
@@ -849,6 +850,14 @@ angular.module('myApp.services', ['myApp.i18n', 'izhukov.utils'])
       }
     }
 
+    function getAllMegaGroups() {
+      return megagroups;
+    }
+
+    function getAllChats () {
+      return chats;
+    }
+
     $rootScope.$on('apiUpdate', function (e, update) {
       // console.log('on apiUpdate', update)
       switch (update._) {
@@ -877,7 +886,9 @@ angular.module('myApp.services', ['myApp.i18n', 'izhukov.utils'])
       hasChat: hasChat,
       wrapForFull: wrapForFull,
       wrapParticipants: wrapParticipants,
-      openChat: openChat
+      openChat: openChat,
+      getAllGroups: getAllChats,
+      getAllChats: getAllChats
     }
   })
 
