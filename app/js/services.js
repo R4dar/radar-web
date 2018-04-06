@@ -633,7 +633,6 @@ angular.module('myApp.services', ['myApp.i18n', 'izhukov.utils'])
       }
 
       if (apiChat.username) {
-        console.log('chat,apiChat.username>', apiChat, apiChat.username);
         var searchUsername = SearchIndexManager.cleanUsername(apiChat.username)
         usernames[searchUsername] = apiChat.id
       }

@@ -737,6 +737,8 @@ angular.module('myApp.controllers', ['myApp.i18n'])
     })
 
     $scope.$on('dialog_unread', function (e, dialog) {
+      console.warn('unread>', e, dialog);
+
       angular.forEach($scope.dialogs, function (curDialog) {
         if (curDialog.peerID == dialog.peerID) {
           curDialog.unreadCount = dialog.count
