@@ -593,7 +593,7 @@ angular.module('myApp.controllers', ['myApp.i18n'])
       $scope.tab = tabName;
       // send to children dialigs list
       $scope.$broadcast('openTab', {
-        tabName
+        tabName: tabName
       });
     }
 
