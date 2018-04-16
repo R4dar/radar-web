@@ -22,7 +22,8 @@ Config.App = {
   hash: '79c281a89ac13215fa4fdbb581af9977',
   version: '0.7.0',
   domains: [
-    'radar.redelivre.org.br'
+    'radar.redelivre.org.br',
+    'radar.redelivre.org'
   ]
 }
 
