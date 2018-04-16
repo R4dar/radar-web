@@ -3789,6 +3789,8 @@ angular.module('myApp.services', ['myApp.i18n', 'izhukov.utils'])
     var prevFavicon
     var stopped = false
 
+    var useServiceWorkerNotification = false;
+
     var settings = {}
 
     $rootScope.$watch('idle.deactivated', function (newVal) {
@@ -4107,6 +4109,7 @@ angular.module('myApp.services', ['myApp.i18n', 'izhukov.utils'])
       var key = data.key || 'k' + idx
       var notification
 
+
       if ('Notification' in window) {
         try {
           if (data.tag) {
@@ -4117,15 +4120,31 @@ angular.module('myApp.services', ['myApp.i18n', 'izhukov.utils'])
               }
             })
           }
-          notification = new Notification(data.title, {
-            icon: data.image || '',
-            body: data.message || '',
-            tag: data.tag || '',
-            silent: data.silent || false
-          })
+
+          if (useServiceWorkerNotification) {
+            sendNotificationWithSWR(data);
+          } else {
+            // first try the old notification api:
+            notification = new Notification(data.title, {
+              icon: data.image || '',
+              body: data.message || '',
+              tag: data.tag || '',
+              silent: data.silent || false
+            });
+          }
+
         } catch (e) {
-          notificationsUiSupport = false
-          WebPushApiManager.setLocalNotificationsDisabled()
+          if (e.name == 'TypeError' && (e.message.indexOf('Illegal constructor') > -1)) {
+            useServiceWorkerNotification = true;
+            try {
+              sendNotificationWithSWR(data);
+            } catch(e) {
+              failOnSendNotification(e)
+            }
+          } else {
+            failOnSendNotification(e);
+          }
+
           return
         }
       }
@@ -4143,19 +4162,35 @@ angular.module('myApp.services', ['myApp.i18n', 'izhukov.utils'])
         return
       }
 
-      notification.onclick = function () {
-        notification.close()
-        AppRuntimeManager.focus()
-        notificationsClear()
-        if (data.onclick) {
-          data.onclick()
-        }
-      }
-
-      notification.onclose = function () {
-        if (!notification.hidden) {
-          delete notificationsShown[key]
+      if (window.ServiceWorkerGlobalScope) {
+        window.ServiceWorkerGlobalScope.onnotificationclick = function(event) {
+          notification.close()
+          AppRuntimeManager.focus()
           notificationsClear()
+          if (data.onclick) {
+            data.onclick()
+          }
+        };
+        window.ServiceWorkerGlobalScope.onnotificationclose = function () {
+          if (!notification.hidden) {
+            delete notificationsShown[key]
+            notificationsClear()
+          }
+        }
+      } else {
+        notification.onclick = function () {
+          notification.close()
+          AppRuntimeManager.focus()
+          notificationsClear()
+          if (data.onclick) {
+            data.onclick()
+          }
+        }
+        notification.onclose = function () {
+          if (!notification.hidden) {
+            delete notificationsShown[key]
+            notificationsClear()
+          }
         }
       }
 
@@ -4275,6 +4310,33 @@ angular.module('myApp.services', ['myApp.i18n', 'izhukov.utils'])
     function getVibrateSupport () {
       return vibrateSupport
     }
+
+    function sendNotificationWithSWR(data) {
+      navigator.serviceWorker.ready.then (
+        function(registration) {
+          registration.showNotification(data.title, {
+            icon: data.image || '',
+            body: data.message || '',
+            tag: data.tag || '',
+            silent: data.silent || false,
+            data: {
+              custom: {
+                peerID: '',
+              }
+            }
+          });
+        }
+      );
+    }
+
+    /**
+     * Method run on notification exibition error
+     */
+    function failOnSendNotification() {
+      notificationsUiSupport = false
+      WebPushApiManager.setLocalNotificationsDisabled()
+    }
+
   })
 
   .service('PasswordManager', function ($timeout, $q, $rootScope, MtpApiManager, CryptoWorker, MtpSecureRandom) {
@@ -4979,9 +5041,6 @@ angular.module('myApp.services', ['myApp.i18n', 'izhukov.utils'])
       return MtpApiManager.invokeApi('messages.checkChatInvite', {
         hash: hash
       }).then(function (chatInvite) {
-        console.log('chatInvite>>', chatInvite);
-
-
         var chatTitle
         if (chatInvite._ == 'chatInviteAlready') {
           AppChatsManager.saveApiChat(chatInvite.chat)
