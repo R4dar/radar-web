@@ -1,7 +1,7 @@
 {
   "name": "Radar",
   "description": "Radar, an Telegram Web App.",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "private": true,
   "main": "app/index.html",
   "single-instance": true,
