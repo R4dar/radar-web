@@ -312,7 +312,7 @@ angular.module('myApp.directives')
         }
         var pinnedHeight = pinnedPanelEl && pinnedPanelEl.offsetHeight || 0
 
-        var historyH = $($window).height() - bottomPanelWrap.offsetHeight - (headWrap ? headWrap.offsetHeight : 46) - pinnedHeight
+        var historyH = $($window).height() - bottomPanelWrap.offsetHeight - (headWrap ? headWrap.offsetHeight : 46) - pinnedHeight;
         $(historyWrap).css({
           height: historyH
         })

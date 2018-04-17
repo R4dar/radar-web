@@ -1612,8 +1612,18 @@ angular.module('myApp.directives', ['myApp.filters'])
         var pinnedHeight = pinnedPanelEl && pinnedPanelEl.offsetHeight || 0
         var historyH = $($window).height() - bottomPanelWrap.offsetHeight - (headWrap ? headWrap.offsetHeight : 48) - footerHeight - pinnedHeight
 
+        var tabSize = 22
+
+        var screenWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+
+        console.log('>>>>>>>>>>>>', screenWidth);
+
+        if (screenWidth < 425) {
+          tabSize = 0;
+        }
+
         $(historyWrap).css({
-          height: historyH +22
+          height: historyH +tabSize
         })
 
         updateBottomizer()
