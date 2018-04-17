@@ -498,6 +498,12 @@ angular.module('myApp.controllers', ['myApp.i18n'])
       }
     })
 
+    $scope.allUnreadCount = 0;
+    $scope.groupsUnreadCount = 0;
+    $scope.contactsUnreadCount = 0;
+    $scope.channelsUnreadCount = 0;
+    $scope.botsUnreadCount = 0;
+
     $scope.$on('esc_no_more', function () {
       $rootScope.$apply(function () {
         // TODO! add filter param here
@@ -699,6 +705,15 @@ angular.module('myApp.controllers', ['myApp.i18n'])
       })
     }
 
+    function resetUnreadCount() {
+      $scope.allUnreadCount = 0;
+      $scope.groupsUnreadCount = 0;
+      $scope.contactsUnreadCount = 0;
+      $scope.channelsUnreadCount = 0;
+      $scope.botsUnreadCount = 0;
+    }
+    $scope.resetUnreadCount = resetUnreadCount;
+
     ChangelogNotifyService.checkUpdate()
     HttpsMigrateService.start()
     LayoutSwitchService.start()
@@ -706,13 +721,13 @@ angular.module('myApp.controllers', ['myApp.i18n'])
     AppStickersManager.start()
   })
 
-  .controller('AppImDialogsController', function ($scope, $location, $q, $timeout, $routeParams, MtpApiManager, AppUsersManager, AppChatsManager, AppMessagesManager, AppProfileManager, AppPeersManager, PhonebookContactsService, ErrorService, AppRuntimeManager) {
+  .controller('AppImDialogsController', function ($scope, $location, $q, $timeout, $routeParams, MtpApiManager, AppUsersManager, AppChatsManager, AppMessagesManager, AppProfileManager, AppPeersManager, PhonebookContactsService, ErrorService, AppRuntimeManager,NotificationsManager) {
     $scope.dialogs = []
     $scope.myResults = []
     $scope.foundPeers = []
     $scope.foundMessages = []
     $scope.tab = 'all'; // all, groups, contacts, bots and bookmarks
-    $scope.showSearchBox = true
+    $scope.showSearchBox = true;
 
     if ($scope.search === undefined) {
       $scope.search = {}
@@ -737,12 +752,15 @@ angular.module('myApp.controllers', ['myApp.i18n'])
     })
 
     $scope.$on('dialog_unread', function (e, dialog) {
-      console.warn('unread>', e, dialog);
+      // refresh all counts ...
+      $scope.$parent.resetUnreadCount();
 
       angular.forEach($scope.dialogs, function (curDialog) {
         if (curDialog.peerID == dialog.peerID) {
-          curDialog.unreadCount = dialog.count
+          curDialog.unreadCount = dialog.count;
         }
+
+        increaceUnreadCount(curDialog, $scope);
       })
     })
 
@@ -770,6 +788,7 @@ angular.module('myApp.controllers', ['myApp.i18n'])
       for (i = 0; i < len; i++) {
         dialog = $scope.dialogs[i]
         if (dialogsUpdated[dialog.peerID]) {
+          dialogsUpdated[dialog.peerID].oldUnreadCount = dialog.unreadCount;
           $scope.dialogs.splice(i, 1)
           i--
           len--
@@ -789,6 +808,14 @@ angular.module('myApp.controllers', ['myApp.i18n'])
         var wrappedDialog = AppMessagesManager.wrapForDialog(dialog.top_message, dialog)
 
         checkIfShouldShowInList(wrappedDialog, AppChatsManager, $scope);
+
+        var diff = 0;
+        if (dialog.oldUnreadCount != dialog.unread_count) {
+          // minus
+          diff = Number(dialog.unread_count) - Number(dialog.oldUnreadCount);
+        }
+
+        increaceUnreadCount(wrappedDialog, $scope, diff);
 
         $scope.dialogs.unshift(wrappedDialog);
       })
@@ -1035,6 +1062,8 @@ angular.module('myApp.controllers', ['myApp.i18n'])
     }
 
     function loadDialogs (force) {
+      $scope.$parent.resetUnreadCount();
+
       offsetIndex = 0
       maxID = 0
       hasMore = false
@@ -1076,6 +1105,8 @@ angular.module('myApp.controllers', ['myApp.i18n'])
             }
 
             checkIfShouldShowInList(wrappedDialog, AppChatsManager, $scope);
+
+            increaceUnreadCount(wrappedDialog, $scope);
 
             if (searchMessages) {
               wrappedDialog.unreadCount = -1
@@ -1165,10 +1196,48 @@ angular.module('myApp.controllers', ['myApp.i18n'])
           console.log('TODO! add support for bookmarks');
           wrappedDialog.shouldShowInList = false;
           break;
-        case 'all':
+        // case 'all':
         default:
           wrappedDialog.shouldShowInList = true;
       }
+    }
+
+    function increaceUnreadCount(wrappedDialog, $scope, diffC) {
+      NotificationsManager.getPeerMuted(wrappedDialog.peerID).then(function (muted) {
+        if (muted) return;
+
+        if (!diffC) {
+          diffC = wrappedDialog.unreadCount;
+        }
+
+        if (
+          wrappedDialog.peerData._ == 'chat' ||
+          AppChatsManager.isMegagroup(wrappedDialog.peerData.id)
+        ) {
+          if (wrappedDialog.unreadCount) {
+            $scope.$parent.groupsUnreadCount += diffC;
+            $scope.$parent.allUnreadCount += diffC;
+          }
+        } else if (
+          wrappedDialog.peerData._ == 'user' &&
+          !AppPeersManager.isBot(wrappedDialog.peerData.id)
+        ) {
+          if (wrappedDialog.unreadCount) {
+            $scope.$parent.contactsUnreadCount += diffC;
+            $scope.$parent.allUnreadCount += diffC;
+          }
+        } else if (
+          AppChatsManager.isChannel(wrappedDialog.peerData.id) &&
+          wrappedDialog.peerData.pFlags.broadcast
+        ) {
+          if (wrappedDialog.unreadCount) {
+            $scope.$parent.channelsUnreadCount += diffC;
+            $scope.$parent.allUnreadCount += diffC;
+          }
+        } else if ( AppPeersManager.isBot(wrappedDialog.peerData.id) ) {
+          // TODO!
+        }
+      });
     }
 
     function showMoreDialogs () {
