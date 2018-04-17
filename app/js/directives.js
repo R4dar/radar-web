@@ -1613,7 +1613,7 @@ angular.module('myApp.directives', ['myApp.filters'])
         var historyH = $($window).height() - bottomPanelWrap.offsetHeight - (headWrap ? headWrap.offsetHeight : 48) - footerHeight - pinnedHeight
 
         $(historyWrap).css({
-          height: historyH
+          height: historyH +22
         })
 
         updateBottomizer()
@@ -1900,7 +1900,7 @@ angular.module('myApp.directives', ['myApp.filters'])
               console.warn(dT(), 'got audio', blob)
 
               $scope.$apply(function () {
-                if (blob.size !== undefined && 
+                if (blob.size !== undefined &&
                     blob.size > 1024) {
                   $scope.draftMessage.files = [blob]
                   $scope.draftMessage.isMedia = true
