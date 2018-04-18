@@ -4,19 +4,19 @@
 
   <div class="tg_head_tabs">
     <a class="tg_head_tab_item" ng-class="{active: tab == 'all' || !tab}" ng-click="openTab('all')">
-      <i class="fa fa-comments-o" aria-hidden="true"></i>
+      <i class="fa fa-comments-o" aria-hidden="true"></i> <span class="tab-unread-count" ng-if="allUnreadCount">{{allUnreadCount}}</span>
     </a>
     <a class="tg_head_tab_item" ng-class="{active: tab == 'groups'}" ng-click="openTab('groups')">
-      <i class="fa fa-users" aria-hidden="true"></i>
+      <i class="fa fa-users" aria-hidden="true"></i> <span class="tab-unread-count" ng-if="groupsUnreadCount">{{groupsUnreadCount}}</span>
     </a>
     <a class="tg_head_tab_item" ng-class="{active: tab == 'contacts'}" ng-click="openTab('contacts')">
-      <i class="fa fa-user-circle-o" aria-hidden="true"></i>
+      <i class="fa fa-user-circle-o" aria-hidden="true"></i> <span class="tab-unread-count" ng-if="contactsUnreadCount">{{contactsUnreadCount}}</span>
     </a>
 <!--     <a class="tg_head_tab_item" ng-class="{active: tab == 'bookmarks'}" ng-click="openTab('bookmarks')">
       <i class="icon-all-bookmarks"></i>
     </a> -->
     <a class="tg_head_tab_item" ng-class="{active: tab == 'channels'}" ng-click="openTab('channels')">
-      <i class="fa fa-bullhorn" aria-hidden="true"></i>
+      <i class="fa fa-bullhorn" aria-hidden="true"></i> <span class="tab-unread-count" ng-if="channelsUnreadCount">{{channelsUnreadCount}}</span>
     </a>
     <a class="tg_head_tab_item" ng-class="{active: tab == 'bots'}" ng-click="openTab('bots')">
       <i class="fa fa-android" aria-hidden="true"></i>
