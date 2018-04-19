@@ -753,7 +753,9 @@ angular.module('myApp.controllers', ['myApp.i18n'])
 
     $scope.$on('dialog_unread', function (e, dialog) {
       // refresh all counts ...
-      $scope.$parent.resetUnreadCount();
+      if ($scope.$parent && $scope.$parent.resetUnreadCount) {
+        $scope.$parent.resetUnreadCount();
+      }
 
       angular.forEach($scope.dialogs, function (curDialog) {
         if (curDialog.peerID == dialog.peerID) {
@@ -1062,7 +1064,9 @@ angular.module('myApp.controllers', ['myApp.i18n'])
     }
 
     function loadDialogs (force) {
-      $scope.$parent.resetUnreadCount();
+      if ($scope && $scope.$parent && $scope.$parent.resetUnreadCount) {
+        $scope.$parent.resetUnreadCount();
+      }
 
       offsetIndex = 0
       maxID = 0
@@ -1203,6 +1207,8 @@ angular.module('myApp.controllers', ['myApp.i18n'])
     }
 
     function increaceUnreadCount(wrappedDialog, $scope, diffC) {
+      if (!$scope.$parent.resetUnreadCount) return;
+
       NotificationsManager.getPeerMuted(wrappedDialog.peerID).then(function (muted) {
         if (muted) return;
 
