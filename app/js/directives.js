@@ -1616,8 +1616,6 @@ angular.module('myApp.directives', ['myApp.filters'])
 
         var screenWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
 
-        console.log('>>>>>>>>>>>>', screenWidth);
-
         if (screenWidth < 425) {
           tabSize = 0;
         }
